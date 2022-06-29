@@ -13,8 +13,10 @@ export const state = {
   bookmarks: [],
 };
 
+const sortBtn = document.querySelector('.sort');
 const createRecipeObject = function (data) {
   const { recipe } = data.data;
+
   return {
     id: recipe.id,
     title: recipe.title,
@@ -31,32 +33,40 @@ const createRecipeObject = function (data) {
 export const loadRecipe = async function (id) {
   try {
     const data = await AJAX(`${API_URL}${id}?=key${KEY}`);
+    // const recObj = Object.entries(data)[1][1];
+    // const recCook = recObj.recipe.cooking_time;
+    // console.log(recCook);
     state.recipe = createRecipeObject(data);
+
     if (state.bookmarks.some(bookmark => bookmark.id === id))
       state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
   } catch (err) {
     console.error(`${err}🥸`);
+
     throw err;
   }
 };
 
 export const loadSearchResults = async function (query) {
   try {
+    // console.log(createRecipeObject());
     state.search.query = query;
+
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
-    console.log(data);
+
     state.search.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
         title: rec.title,
         publisher: rec.publisher,
         image: rec.image_url,
+        cooking: rec.recCook,
         ...(rec.key && { key: rec.key }),
       };
     });
+
     state.search.page = 1;
-    console.log(state.search.results);
   } catch (err) {
     console.error(`${err}🥸`);
     throw err;
@@ -110,10 +120,6 @@ const init = function () {
 
 init();
 
-const clearBookmarks = function () {
-  localStorage.clear('bookmarks');
-};
-
 export const uploadRecipe = async function (newRecipe) {
   try {
     const ingredients = Object.entries(newRecipe)
@@ -139,8 +145,7 @@ export const uploadRecipe = async function (newRecipe) {
       ingredients,
     };
 
-    console.log(recipe);
-
+    console.log(ingredients);
     const data = await AJAX(`${API_URL}?key=${KEY}`, recipe);
     state.recipe = createRecipeObject(data);
     addBookmark(state.recipe);

@@ -40,3 +40,27 @@
     color: $color-grey-dark-2;
   }
 }
+
+.number {
+  color: #f38e82;
+  font-size: 1.3rem;
+  font-weight: 800;
+  padding-left: 2.8rem;
+  padding-top: 1.8rem;
+}
+
+.sort {
+  width: 2.5rem;
+}
+
+.sort-text {
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: $color-grey-dark-1;
+  margin-left: 1rem;
+}
+
+.nav-sort {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
